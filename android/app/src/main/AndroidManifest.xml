@@ -20,6 +20,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+              <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+              <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+              <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
               <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyCatC8tIcOdxQQU8j99nSJhhQonSSYoyNk"/>
             <intent-filter>
