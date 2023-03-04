@@ -104,7 +104,27 @@ class _MapState extends State<Maps> {
                       ]),
                 )),
             Positioned(
-                left: 50, bottom: 20, child: Container(child: const Text('ss')))
+                left: 50,
+                bottom: 20,
+                child: Container(
+                    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Center(
+                        child: Ink(
+                          padding: EdgeInsets.all(10),
+                          decoration: const ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_outward_sharp),
+                            color: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
+                      ),
+                    )))
           ],
         );
       } else {
