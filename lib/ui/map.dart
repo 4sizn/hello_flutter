@@ -22,10 +22,7 @@ class _MapState extends State<Maps> {
   void initState() {
     super.initState();
 
-    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
-    //   var provider = Provider.of<LocationProvider>(context, listen: true);
-    //   await provider.getLocation();
-    // });
+    Future.microtask(() => context.read<LocationProvider>().getLocation());
   }
 
   @override
@@ -36,15 +33,12 @@ class _MapState extends State<Maps> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-
     return Scaffold(
         body: Consumer(builder: (context, LocationProvider provider, _) {
-      // if (provider.status == LocationProviderStatus.initial ||
-      //     provider.status == LocationProviderStatus.loading) {
-      //   return const Center(child: CircularProgressIndicator());
-      // } else
-      if (provider.status == LocationProviderStatus.success ||
-          provider.status == LocationProviderStatus.initial) {
+      if (provider.status == LocationProviderStatus.initial ||
+          provider.status == LocationProviderStatus.loading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (provider.status == LocationProviderStatus.success) {
         return Stack(
           children: [
             GoogleMap(
