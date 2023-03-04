@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hello_world/providers/location_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
+import 'package:provider/provider.dart';
 
 class Maps extends StatefulWidget {
   const Maps({super.key});
@@ -25,58 +27,68 @@ class _MapState extends State<Maps> {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-        body: Stack(
-      children: [
-        GoogleMap(
-          onMapCreated: (controller) {},
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
-        ),
-        Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: Container(
-              color: Colors.transparent,
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Material(
+        body: Consumer(builder: (context, LocationProvider provider, _) {
+      if (provider.status == LocationProviderStatus.initial ||
+          provider.status == LocationProviderStatus.loading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (provider.status == LocationProviderStatus.success) {
+        return Stack(
+          children: [
+            GoogleMap(
+              onMapCreated: (controller) {},
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 11.0,
+              ),
+            ),
+            Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Container(
                   color: Colors.transparent,
-                  child: Center(
-                      child: Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: TextButton(
-                              child: const Text(
-                                '+',
-                                style: TextStyle(
-                                    fontSize: 24, color: Colors.white),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: Center(
+                              child: Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Colors.lightBlue,
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: TextButton(
+                                      child: const Text(
+                                        '+',
+                                        style: TextStyle(
+                                            fontSize: 24, color: Colors.white),
+                                      ),
+                                      onPressed: () {}))),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Ink(
+                              decoration: const ShapeDecoration(
+                                color: Colors.lightBlue,
+                                shape: CircleBorder(),
                               ),
-                              onPressed: () {}))),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.lightBlue,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.replay),
-                        color: Colors.white,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                )
-              ]),
-            ))
-      ],
-    ));
+                              child: IconButton(
+                                icon: const Icon(Icons.replay),
+                                color: Colors.white,
+                                onPressed: () {},
+                              ),
+                            ),
+                          ),
+                        )
+                      ]),
+                ))
+          ],
+        );
+      } else {
+        return const Center(child: Text('error'));
+      }
+    }));
   }
 }
