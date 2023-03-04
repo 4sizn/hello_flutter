@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hello_world/providers/location_provider.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
@@ -18,6 +19,16 @@ class _MapState extends State<Maps> {
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
   @override
+  void initState() {
+    super.initState();
+
+    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    //   var provider = Provider.of<LocationProvider>(context, listen: true);
+    //   await provider.getLocation();
+    // });
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -28,10 +39,12 @@ class _MapState extends State<Maps> {
 
     return Scaffold(
         body: Consumer(builder: (context, LocationProvider provider, _) {
-      if (provider.status == LocationProviderStatus.initial ||
-          provider.status == LocationProviderStatus.loading) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (provider.status == LocationProviderStatus.success) {
+      // if (provider.status == LocationProviderStatus.initial ||
+      //     provider.status == LocationProviderStatus.loading) {
+      //   return const Center(child: CircularProgressIndicator());
+      // } else
+      if (provider.status == LocationProviderStatus.success ||
+          provider.status == LocationProviderStatus.initial) {
         return Stack(
           children: [
             GoogleMap(
@@ -50,40 +63,48 @@ class _MapState extends State<Maps> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Material(
-                          color: Colors.transparent,
-                          child: Center(
-                              child: Ink(
+                        Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Center(
+                                child: Ink(
+                                  padding: EdgeInsets.all(10),
                                   decoration: const ShapeDecoration(
                                     color: Colors.lightBlue,
                                     shape: CircleBorder(),
                                   ),
-                                  child: TextButton(
-                                      child: const Text(
-                                        '+',
-                                        style: TextStyle(
-                                            fontSize: 24, color: Colors.white),
-                                      ),
-                                      onPressed: () {}))),
-                        ),
-                        Material(
-                          color: Colors.transparent,
-                          child: Center(
-                            child: Ink(
-                              decoration: const ShapeDecoration(
-                                color: Colors.lightBlue,
-                                shape: CircleBorder(),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.edit_location_alt),
+                                    color: Colors.white,
+                                    onPressed: () {},
+                                  ),
+                                ),
                               ),
-                              child: IconButton(
-                                icon: const Icon(Icons.replay),
-                                color: Colors.white,
-                                onPressed: () {},
+                            )),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Center(
+                                child: Ink(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: const ShapeDecoration(
+                                    color: Colors.lightBlue,
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.replay),
+                                    color: Colors.white,
+                                    onPressed: () {},
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        )
+                            ))
                       ]),
-                ))
+                )),
+            Positioned(
+                left: 50, bottom: 20, child: Container(child: const Text('ss')))
           ],
         );
       } else {
