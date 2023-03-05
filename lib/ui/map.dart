@@ -1,9 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hello_world/providers/location_provider.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
-import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 import 'package:provider/provider.dart';
 
 class Maps extends StatefulWidget {
@@ -14,9 +14,8 @@ class Maps extends StatefulWidget {
 }
 
 class _MapState extends State<Maps> {
-  GoogleMapsFlutterPlatform mapsImplementation =
-      GoogleMapsFlutterPlatform.instance = GoogleMapsPlugin();
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  // GoogleMapsFlutterPlatform mapsImplementation =
+  //     GoogleMapsFlutterPlatform.instance = GoogleMapsPlugin();
 
   @override
   void initState() {
@@ -33,20 +32,40 @@ class _MapState extends State<Maps> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    GoogleMapController mapControler;
+    Completer<GoogleMapController> _controller = Completer();
+
+    void animatedViewofMap({double? lat, double? lng}) async {
+      CameraPosition cPosition = CameraPosition(
+        zoom: 15,
+        target: LatLng(lat!, lng!),
+      );
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+    }
+
     return Scaffold(
         body: Consumer(builder: (context, LocationProvider provider, _) {
       if (provider.status == LocationProviderStatus.initial ||
           provider.status == LocationProviderStatus.loading) {
         return const Center(child: CircularProgressIndicator());
       } else if (provider.status == LocationProviderStatus.success) {
+        LocationProvider locationProvider =
+            Provider.of<LocationProvider>(context);
+
+        CameraPosition initialCameraPosition = CameraPosition(
+            target: LatLng(locationProvider.userLocation.latitude,
+                locationProvider.userLocation.longitude),
+            zoom: 15);
+
+        animatedViewofMap(
+            lat: locationProvider.userLocation.latitude,
+            lng: locationProvider.userLocation.longitude);
         return Stack(
           children: [
             GoogleMap(
               onMapCreated: (controller) {},
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-              ),
+              initialCameraPosition: initialCameraPosition,
             ),
             Positioned(
                 bottom: 20,

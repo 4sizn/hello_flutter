@@ -13,6 +13,7 @@ class LocationProvider with ChangeNotifier {
   late UserLocationModel _userLocation;
   LocationService _locationService = LocationService();
   LocationProviderStatus _status = LocationProviderStatus.initial;
+  UserLocationModel get userLocation => _userLocation;
   LocationProviderStatus get status => _status;
 
   Future<void> getLocation() async {
