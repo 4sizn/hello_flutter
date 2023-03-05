@@ -64,7 +64,10 @@ class _MapState extends State<Maps> {
         return Stack(
           children: [
             GoogleMap(
-              onMapCreated: (controller) {},
+              mapType: MapType.terrain,
+              onMapCreated: (controller) {
+                _controller.complete(controller);
+              },
               initialCameraPosition: initialCameraPosition,
             ),
             Positioned(
