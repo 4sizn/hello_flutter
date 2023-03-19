@@ -27,10 +27,9 @@ class _LoginState extends State<Login> {
 
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
+        _isLoading = false;
         _currentUser = account;
       });
-
-      if (_currentUser != null) {}
     });
 
     _googleSignIn.signInSilently();
@@ -38,20 +37,45 @@ class _LoginState extends State<Login> {
 
   Future<void> _handleSignIn() async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       await _googleSignIn.signIn();
     } catch (error) {
       print(error);
     }
   }
 
+  Future<void> _handleLogout() async {
+    try {
+      await _googleSignIn.disconnect();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Widget _buildBody() {
+    final GoogleSignInAccount? user = _currentUser;
+    if (user != null) {
+      return Column(
+        children: [
+          ElevatedButton(onPressed: _handleLogout, child: const Text('Logout'))
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          ElevatedButton(onPressed: _handleSignIn, child: const Text('SIGN IN'))
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final GoogleSignInAccount? user = _currentUser;
     return Scaffold(
-        body: Column(
-      children: [
-        ElevatedButton(onPressed: _handleSignIn, child: const Text('SIGN IN'))
-      ],
+        body: Container(
+      child: _buildBody(),
     ));
   }
 }
