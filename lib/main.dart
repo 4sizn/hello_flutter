@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hello_world/providers/location_provider.dart';
 import 'package:flutter_hello_world/screen/login.dart';
-import 'package:flutter_hello_world/screen/map.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
